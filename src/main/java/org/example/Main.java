@@ -23,12 +23,15 @@ public class Main {
         // BufferRead: mutable
 
         BufferedReader br = new BufferedReader(isr);
-
-
         String s = null;
+
+        // class to handle Input
+        InputHandler handler = new InputHandler();
+
 
         try {
             while ((s = br.readLine()) != null) {
+                handler.handleInput(s);
                 printCurrentPath();
             }
         } catch ( IOException ioe) {

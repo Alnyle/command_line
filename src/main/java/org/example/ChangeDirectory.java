@@ -39,8 +39,7 @@ public class ChangeDirectory {
 
                 if (exists) {
                     System.out.println(STR."New path: \{newCurrentPath}");
-
-//                    System.setProperties("user.dir", newCurrentPath);
+                    changeDirectory(newCurrentPath);
                 }
             }
 
@@ -65,9 +64,15 @@ public class ChangeDirectory {
 
     }
 
-    private void changeDirectory(String directory_name) {
+    private boolean changeDirectory(String directory_name) {
 
+        boolean isDirectoryChanged = false;
 
+        File newDirectory = new File(directory_name).getAbsoluteFile();
+
+        isDirectoryChanged = (System.setProperty("user.dir", newDirectory.getAbsolutePath()) != null);
+        return isDirectoryChanged;
+//        System.setProperties("user.dir", newCurrentPath);
     }
 
 }

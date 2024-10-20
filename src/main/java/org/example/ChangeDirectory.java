@@ -58,7 +58,7 @@ public class ChangeDirectory {
             }
 
             System.out.println(" ");
-        } else if (directory.startsWith("../..")) {
+        } else if (directory.startsWith("../")) {
 
             // if there is more than `..` in your path
 //            String[] directories = path.split("\\\\");

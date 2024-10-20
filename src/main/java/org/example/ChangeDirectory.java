@@ -9,18 +9,25 @@ public class ChangeDirectory {
 
     public void cd(String directory) {
 
+        // get the path of the current directory
+        String path = System.getProperty("user.dir");
+
+
+
+        // path of the current directory
+
+        // getRoot() => change here
+        String[] directories = path.split("\\\\");
+
+
+        String newCurrentPath = null;
 
 
         if (directory.equals("..")) {
 
-            // get the path of the current directory
-            String path = System.getProperty("user.dir");
 
-            // path of the current directory
-            String[] directories = path.split("\\\\");
 
-            String newCurrentPath = null;
-            if (directories != null && directories.length > 0) {
+            if (directories.length > 0) {
                 // Use StringBuilder to reassemble the path minus the last directory
                 StringBuilder newPath = new StringBuilder();
 
@@ -28,38 +35,91 @@ public class ChangeDirectory {
                 for (int i = 0; i < directories.length - 1; i++) {
                     newPath.append(directories[i]).append("\\");
                 }
+                // Remove the trailing separator
+                if (!newPath.isEmpty()) {
+                    newCurrentPath = newPath.toString();
+
+
+                    boolean exists = Files.exists(Path.of(newCurrentPath));
+                    if (exists) {
+                        System.out.println(STR."New path: \{newCurrentPath}");
+                        boolean isChanged = changeDirectory(newCurrentPath);
+
+                        if (!isChanged) {
+                            System.out.println("Path Invalid");
+                        }
+
+                    }
+                } else {
+                    // if path not valid
+                    System.out.println("Path Invalid");
+                }
+
+            }
+
+            System.out.println(" ");
+        } else if (directory.startsWith("../..")) {
+
+            // if there is more than `..` in your path
+//            String[] directories = path.split("\\\\");
+
+
+            String[] newDirectory = directory.split("/");
+
+            if (newDirectory.length > 0) {
+
+                // count number of times have to back
+                int backwords = 0;
+
+                int i = 0;
+
+                while (true) {
+                    if (newDirectory[i].equals("..")) {
+                        backwords++;
+                        i++;
+                    } else {
+                        break;
+                    }
+                }
+
+                System.out.println(backwords);
+                // Use StringBuilder store path of new path
+                StringBuilder newPath = new StringBuilder();
+
+
+                for (int p = 0; p < directories.length - backwords; p++) {
+                    newPath.append(directories[p]).append("\\");
+                }
+
+                for (int p = i; p < newDirectory.length; p++) {
+                    newPath.append(newDirectory[p]).append("\\");
+                }
 
                 // Remove the trailing separator
                 if (!newPath.isEmpty()) {
                     newCurrentPath = newPath.toString();
+//                    for (int p = 0; p < directories.length - backwords; p++) {
+//                        newCurrentPath.append(directories[i]).append("\\");
+//                    }
+
+                    boolean exists = Files.exists(Path.of(newCurrentPath));
+                    if (exists) {
+                        System.out.println(STR."New path: \{newCurrentPath}");
+                        boolean isChanged = changeDirectory(newCurrentPath);
+
+                        if (!isChanged) {
+                            System.out.println("Path Invalid");
+                        }
+
+                    } else {
+                        System.out.println("Something wrong");
+                    }
+
+                    System.out.println("new path: " + newCurrentPath + " " + backwords);
                 }
 
-                // but check if that path exists before change directory
-                boolean exists = Files.exists(Path.of(newCurrentPath));
-
-                if (exists) {
-                    System.out.println(STR."New path: \{newCurrentPath}");
-                    changeDirectory(newCurrentPath);
-                }
             }
 
-
-            // check if there is no path before it
-
-
-////            System.out.print("result = ");
-//            for (String str : directories) {
-//                System.out.println(str + ", ");
-//            }
-
-            System.out.println(" ");
-
-//            String newCurrentPath = "";
-//
-//            // loop on all directories expect last one
-//            for (int i = 0; i < directories.length() - 1; i++) {
-//
-//            }
         }
 
     }
@@ -70,9 +130,10 @@ public class ChangeDirectory {
 
         File newDirectory = new File(directory_name).getAbsoluteFile();
 
+
+        // change directory and check if changed directory
         isDirectoryChanged = (System.setProperty("user.dir", newDirectory.getAbsolutePath()) != null);
         return isDirectoryChanged;
-//        System.setProperties("user.dir", newCurrentPath);
     }
 
 }

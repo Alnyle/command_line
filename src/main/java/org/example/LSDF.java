@@ -110,6 +110,20 @@ public class LSDF {
 
     }
 
+
+    public void lsHandler(String directory) {
+        // get list from here from ls
+    }
+
+    public void lsHandler(String directory, char op) {
+        // get list from here ls
+    }
+
+    public void lsHandler(String directory, char op1, char op2) {
+        // get list from here ls
+    }
+
+
     private File[] getAllFileAndDirectories(String path) {
 
         // Creating A file object for directory

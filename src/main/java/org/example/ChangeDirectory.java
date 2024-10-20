@@ -22,6 +22,9 @@ public class ChangeDirectory {
 
         String newCurrentPath = null;
 
+        // Use StringBuilder store path of new path
+        StringBuilder newPath = new StringBuilder();
+
 
         if (directory.equals("..")) {
 
@@ -29,7 +32,7 @@ public class ChangeDirectory {
 
             if (directories.length > 0) {
                 // Use StringBuilder to reassemble the path minus the last directory
-                StringBuilder newPath = new StringBuilder();
+
 
                 //remove last directory to change
                 for (int i = 0; i < directories.length - 1; i++) {
@@ -70,11 +73,9 @@ public class ChangeDirectory {
                     }
                 }
 
-                System.out.println(backwords);
-                // Use StringBuilder store path of new path
-                StringBuilder newPath = new StringBuilder();
+                // System.out.println(backwords);
 
-                // subtract old path directories based on number of `..`
+                // subtract from old path directories based on number of `..`
                 for (int p = 0; p < directories.length - backwords; p++) {
                     newPath.append(directories[p]).append("\\");
                 }
@@ -93,7 +94,41 @@ public class ChangeDirectory {
 
             }
 
+        } else if (directory.startsWith("./")) {
+
+            String[] newDirectory = directory.split("/");
+
+
+            // start new path after './'
+            for (int p = 1; p < newDirectory.length; p++) {
+                newPath.append(newDirectory[p]).append("\\");
+            }
+
+            // Remove the trailing separator
+            if (!newPath.isEmpty()) {
+                newCurrentPath = newPath.toString();
+                checkAndChangeDirectory(newCurrentPath);
+                // System.out.println("new path: " + newCurrentPath + " " + backwords);
+            }
+
+        } else if (!directory.startsWith("./")) {
+
+            String[] newDirectory = directory.split("/");
+
+            if (newDirectory.length == 1) {
+                newPath.append(newDirectory[0]).append("\\");
+            }
+
+            if (!newPath.isEmpty()) {
+                newCurrentPath = newPath.toString();
+                checkAndChangeDirectory(newCurrentPath);
+                // System.out.println("new path: " + newCurrentPath + " " + backwords);
+            }
+
         }
+
+
+
 
     }
 
@@ -121,7 +156,7 @@ public class ChangeDirectory {
             }
 
         } else {
-            System.out.println("Something wrong");
+            System.out.println("Path Invalid");
         }
     }
 

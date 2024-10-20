@@ -12,12 +12,11 @@ public class ChangeDirectory {
         // get the path of the current directory
         String path = System.getProperty("user.dir");
 
+        // list of directories to current path
+        String[] directories = path.split("\\\\");
 
-
-        // path of the current directory
 
         // getRoot() => change here
-        String[] directories = path.split("\\\\");
 
 
         String newCurrentPath = null;
@@ -64,7 +63,7 @@ public class ChangeDirectory {
 
                 int i = 0;
 
-                while (true) {
+                while (true && i < newDirectory.length) {
                     if (newDirectory[i].equals("..")) {
                         backwords++;
                         i++;
@@ -85,7 +84,7 @@ public class ChangeDirectory {
                     newPath.append(newDirectory[p]).append("\\");
                 }
 
-                // Remove the trailing separator
+
                 if (!newPath.isEmpty()) {
                     newCurrentPath = newPath.toString();
                     checkAndChangeDirectory(newCurrentPath);
@@ -104,7 +103,6 @@ public class ChangeDirectory {
                 newPath.append(newDirectory[p]).append("\\");
             }
 
-            // Remove the trailing separator
             if (!newPath.isEmpty()) {
                 newCurrentPath = newPath.toString();
                 checkAndChangeDirectory(newCurrentPath);
@@ -117,12 +115,15 @@ public class ChangeDirectory {
 
             if (newDirectory.length == 1) {
                 newPath.append(newDirectory[0]).append("\\");
-            }
 
-            if (!newPath.isEmpty()) {
-                newCurrentPath = newPath.toString();
-                checkAndChangeDirectory(newCurrentPath);
-                // System.out.println("new path: " + newCurrentPath + " " + backwords);
+
+                if (!newPath.isEmpty()) {
+                    newCurrentPath = newPath.toString();
+                    checkAndChangeDirectory(newCurrentPath);
+                    // System.out.println("new path: " + newCurrentPath + " " + backwords);
+                }
+            } else {
+                System.out.println("Invalid Path");
             }
 
         }

@@ -29,6 +29,8 @@ public class Main {
         InputHandler handler = new InputHandler();
 
 
+
+
         try {
             while ((s = br.readLine()) != null) {
                 handler.handleInput(s);

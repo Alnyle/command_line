@@ -11,11 +11,13 @@ public class InputHandler {
 
     private final ChangeDirectory changeDirectory;
     private final LSDF listDirectoriesFiles;
+    private final CreateDirectory createDirectory;
 
 
     public InputHandler() {
         changeDirectory = new ChangeDirectory();
         listDirectoriesFiles = new LSDF();
+        createDirectory = new CreateDirectory();
     }
 
 
@@ -66,6 +68,8 @@ public class InputHandler {
                 listDirectoriesFiles.ls(arguments[3], 'r', 'a');
             }
 
+        } else if (arguments[0].equals("mkdir")) {
+            createDirectory.mkdir(arguments[1]);
         }
     }
 

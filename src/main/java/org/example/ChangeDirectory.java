@@ -73,7 +73,6 @@ public class ChangeDirectory {
                     }
                 }
 
-                // System.out.println(backwords);
 
                 // subtract from old path directories based on number of `..`
                 for (int p = 0; p < directories.length - backwords; p++) {
@@ -89,7 +88,6 @@ public class ChangeDirectory {
                 if (!newPath.isEmpty()) {
                     newCurrentPath = newPath.toString();
                     checkAndChangeDirectory(newCurrentPath);
-                    // System.out.println("new path: " + newCurrentPath + " " + backwords);
                 }
 
             }
@@ -107,7 +105,6 @@ public class ChangeDirectory {
             if (!newPath.isEmpty()) {
                 newCurrentPath = newPath.toString();
                 checkAndChangeDirectory(newCurrentPath);
-                // System.out.println("new path: " + newCurrentPath + " " + backwords);
             }
 
         } else if (!directory.startsWith("./")) {
@@ -127,7 +124,6 @@ public class ChangeDirectory {
                 if (!newPath.isEmpty()) {
                     newCurrentPath = newPath.toString();
                     checkAndChangeDirectory(newCurrentPath);
-                    // System.out.println("new path: " + newCurrentPath + " " + backwords);
                 }
             } else {
                 System.out.println("Invalid Path");
@@ -153,19 +149,15 @@ public class ChangeDirectory {
         // change directory and check if directory changed
         System.setProperty(Shell.currentPath, newDirectory.getAbsolutePath());
         Shell.setPath(String.valueOf(newDirectory));
-//        return isDirectoryChanged;
         return true;
     }
 
     private void checkAndChangeDirectory(String newCurrentPath) {
 
 
-//        ProcessBuilder processBuilder = new ProcessBuilder();
 
         boolean exists = Files.exists(Path.of(newCurrentPath));
-        System.out.println(STR."New path note here: \{newCurrentPath}");
         if (exists) {
-             System.out.println(STR."New path: \{newCurrentPath}");
             boolean isChanged = changeDirectory(newCurrentPath);
 
             if (!isChanged) {

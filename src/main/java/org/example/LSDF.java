@@ -1,11 +1,9 @@
 package org.example;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
-import java.io.FilenameFilter;
 
 
 
@@ -15,11 +13,11 @@ public class LSDF {
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_BLUE = "\u001B[34m";
 
-    char unix = '\\';
+
 
 
     // main ls
-    public String pathHandler(String directory) {
+    public String pathHandler(String directory, Boolean...createFolder) {
 
         // get the path of the current directory
         String path = Shell.currentPath;
@@ -30,7 +28,7 @@ public class LSDF {
         // getRoot() => change here
 
 
-        String newCurrentPath = null;
+        String newCurrentPath;
 
         // Use StringBuilder store path of new path
         StringBuilder newPath = new StringBuilder();
@@ -97,7 +95,12 @@ public class LSDF {
             for (int p = 1; p < newDirectory.length; p++) {
                 newPath.append(newDirectory[p]).append("\\");
             }
-            newCurrentPath = addNewPath(newPath.toString());
+
+            if (createFolder.length > 0) {
+                newCurrentPath = addNewPath(newPath.toString(), true);
+            } else {
+                newCurrentPath = addNewPath(newPath.toString(), false);
+            }
             return newCurrentPath;
 
         } else if (!directory.startsWith("./") && !directory.isEmpty()) {
@@ -106,14 +109,26 @@ public class LSDF {
 
             if (newDirectory.length == 1) {
                 newPath.append(newDirectory[0]).append("\\");
-                newCurrentPath = addNewPath(newPath.toString());
+
+                // dealing create folder path => make full path with name
+                if (createFolder.length > 0) {
+                    newCurrentPath = addNewPath(newPath.toString(), true);
+                } else {
+                    // make the new path as working directory to get list of file and folders
+                    newCurrentPath = addNewPath(newPath.toString(), false);
+                }
+
                 return newCurrentPath;
             } else {
                 return "Invalid path";
             }
 
         } else if (directory.isEmpty()) {
-            newCurrentPath = addNewPath("");
+            if (createFolder.length > 0) {
+                newCurrentPath = addNewPath("", true);
+            } else {
+                newCurrentPath = addNewPath("", false);
+            }
             return newCurrentPath;
         }
 
@@ -253,20 +268,19 @@ public class LSDF {
     }
 
     // use when you want to add new path to current path like => ./path
-    private String addNewPath(String directory_name) {
+    private String addNewPath(String directory_name, boolean createFolder) {
         boolean isDirectoryChanged = false;
 
 
         String currentPath = Shell.currentPath;
 
-        File newPath = new File(currentPath,"user.dir").getAbsoluteFile();
-        return newPath.getAbsolutePath();
-
-
-        // the new path to the current path
-//        String newPath = System.setProperty("user.dir", newDirectory.getAbsolutePath()) + unix  + directory_name;
-
-//        return newPath;
+        if (createFolder) {
+            File newPath = new File(currentPath,directory_name).getAbsoluteFile();
+            return newPath.getAbsolutePath();
+        } else {
+            File newPath = new File(currentPath,"user.dir").getAbsoluteFile();
+            return newPath.getAbsolutePath();
+        }
     }
 
 

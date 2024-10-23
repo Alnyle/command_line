@@ -22,7 +22,7 @@ public class LSDF {
     public String pathHandler(String directory) {
 
         // get the path of the current directory
-        String path = System.getProperty("user.dir");
+        String path = Shell.currentPath;
 
         // list of directories to current path
         String[] directories = path.split("\\\\");
@@ -34,7 +34,6 @@ public class LSDF {
 
         // Use StringBuilder store path of new path
         StringBuilder newPath = new StringBuilder();
-
 
         if (checkPath(directory)) {
             File folder = new File(directory);
@@ -125,13 +124,13 @@ public class LSDF {
     public ArrayList<File> LS(String directory, boolean allFiles) {
 
 
-
+        System.out.println(directory);
 
         // get the path of the directory
         String path = pathHandler(directory);
 
 
-        System.out.println(path);
+//        System.out.println(path);
         // check if the path is valid or not
         boolean isValidPath = checkPath(path);
         if (isValidPath) {
@@ -152,7 +151,9 @@ public class LSDF {
 
     public ArrayList<File> ls(String directory) {
 
-
+        if (directory.isEmpty()){
+            System.out.println("it's empty");
+        }
 
         ArrayList<File> folders = LS(directory, false);
         
@@ -256,7 +257,7 @@ public class LSDF {
         boolean isDirectoryChanged = false;
 
 
-        String currentPath = System.getProperty("user.dir");
+        String currentPath = Shell.currentPath;
 
         File newPath = new File(currentPath,"user.dir").getAbsoluteFile();
         return newPath.getAbsolutePath();

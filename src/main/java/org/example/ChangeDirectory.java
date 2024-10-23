@@ -7,10 +7,11 @@ import java.nio.file.Path;
 public class ChangeDirectory {
 
 
+
     public void cd(String directory) {
 
         // get the path of the current directory
-        String path = System.getProperty("user.dir");
+        String path = Shell.currentPath;
 
         // list of directories to current path
         String[] directories = path.split("\\\\");
@@ -111,10 +112,16 @@ public class ChangeDirectory {
 
         } else if (!directory.startsWith("./")) {
 
+
+
             String[] newDirectory = directory.split("/");
 
             if (newDirectory.length == 1) {
+
+
+                newPath.append(Shell.currentPath).append("\\");
                 newPath.append(newDirectory[0]).append("\\");
+
 
 
                 if (!newPath.isEmpty()) {
@@ -139,17 +146,26 @@ public class ChangeDirectory {
 
         File newDirectory = new File(directory_name).getAbsoluteFile();
 
+        String currentPath = newDirectory.getAbsolutePath();
+
+        System.out.println(Shell.currentPath);
 
         // change directory and check if directory changed
-        isDirectoryChanged = (System.setProperty("user.dir", newDirectory.getAbsolutePath()) != null);
-        return isDirectoryChanged;
+        System.setProperty(Shell.currentPath, newDirectory.getAbsolutePath());
+        Shell.setPath(String.valueOf(newDirectory));
+//        return isDirectoryChanged;
+        return true;
     }
 
     private void checkAndChangeDirectory(String newCurrentPath) {
 
+
+//        ProcessBuilder processBuilder = new ProcessBuilder();
+
         boolean exists = Files.exists(Path.of(newCurrentPath));
+        System.out.println(STR."New path note here: \{newCurrentPath}");
         if (exists) {
-            // System.out.println(STR."New path: \{newCurrentPath}");
+             System.out.println(STR."New path: \{newCurrentPath}");
             boolean isChanged = changeDirectory(newCurrentPath);
 
             if (!isChanged) {

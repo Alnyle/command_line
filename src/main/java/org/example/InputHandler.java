@@ -1,8 +1,10 @@
 package org.example;
 
+import java.io.IOException;
+
 public class InputHandler {
 
-    public void handleInput(String Input) {
+    public void handleInput(String Input) throws IOException {
 
         String[] commands = Input.split(" ");
 
@@ -18,12 +20,29 @@ public class InputHandler {
                 listDirectoriesFiles.ls("");
                 return;
             } else if (commands.length == 2) {
-                listDirectoriesFiles.ls(commands[1]);
-            } else if (commands.length == 3) {
+
                 if (commands[1].equals("-a")) {
-                    // check on char
-                    listDirectoriesFiles.lsHandler(commands[2], commands[1].charAt(0));
+                    listDirectoriesFiles.ls("", 'a');
+                } else if (commands[1].equals("-r")) {
+                    listDirectoriesFiles.ls("", 'r');
+                } else {
+                    listDirectoriesFiles.ls(commands[1]);
                 }
+
+            } else if (commands.length == 3) {
+
+
+                if ((commands[1].equals("-a") && commands[2].equals("-r")) || (commands[1].equals("-r") && commands[2].equals("-a"))) {
+                    listDirectoriesFiles.ls("", 'a', 'r');
+                }
+                // check on char
+                else if (commands[1].equals("-a")) {
+                    listDirectoriesFiles.ls(commands[2], 'a');
+                } else if (commands[1].equals("-r")) {
+                    listDirectoriesFiles.ls(commands[2], 'r');
+                }
+            } else if (commands.length == 4) {
+                listDirectoriesFiles.ls(commands[3], 'r', 'a');
             }
 
 

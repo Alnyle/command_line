@@ -4,8 +4,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.io.FilenameFilter;
 
 
@@ -18,7 +17,9 @@ public class LSDF {
 
     char unix = '\\';
 
-    public void ls(String directory) {
+
+    // main ls
+    public String pathHandler(String directory) {
 
         // get the path of the current directory
         String path = System.getProperty("user.dir");
@@ -34,6 +35,14 @@ public class LSDF {
         // Use StringBuilder store path of new path
         StringBuilder newPath = new StringBuilder();
 
+
+        if (checkPath(directory)) {
+            File folder = new File(directory);
+
+
+            return folder.getAbsolutePath();
+        }
+
         if (directory.equals("..") || directory.equals("../")) {
 
             //remove last directory to change
@@ -41,7 +50,7 @@ public class LSDF {
                 newPath.append(directories[i]).append("\\");
             }
             newCurrentPath = newPath.toString();
-            printAllDirectories(newCurrentPath);
+            return newCurrentPath;
 
         } else if (directory.startsWith("../")) {
 
@@ -76,7 +85,8 @@ public class LSDF {
 
 
                 newCurrentPath = newPath.toString();
-                printAllDirectories(newCurrentPath);
+                return newCurrentPath;
+
             }
 
 
@@ -89,7 +99,7 @@ public class LSDF {
                 newPath.append(newDirectory[p]).append("\\");
             }
             newCurrentPath = addNewPath(newPath.toString());
-            printAllDirectories(newCurrentPath);
+            return newCurrentPath;
 
         } else if (!directory.startsWith("./") && !directory.isEmpty()) {
 
@@ -98,74 +108,166 @@ public class LSDF {
             if (newDirectory.length == 1) {
                 newPath.append(newDirectory[0]).append("\\");
                 newCurrentPath = addNewPath(newPath.toString());
-                printAllDirectories(newCurrentPath);
+                return newCurrentPath;
             } else {
-                System.out.println("Invalid Path");
+                return "Invalid path";
             }
 
         } else if (directory.isEmpty()) {
-            newCurrentPath = addNewPath(path);
-            printAllDirectories(path);
+            newCurrentPath = addNewPath("");
+            return newCurrentPath;
+        }
+
+        return "Invalid Path";
+    }
+
+    // ls path
+    public ArrayList<File> LS(String directory, boolean allFiles) {
+
+
+
+
+        // get the path of the directory
+        String path = pathHandler(directory);
+
+
+        System.out.println(path);
+        // check if the path is valid or not
+        boolean isValidPath = checkPath(path);
+        if (isValidPath) {
+            ArrayList<File> folders = getAllFileAndDirectories(path, allFiles);
+            if (folders != null || !folders.isEmpty()) {
+                return folders;
+            } else {
+                return new ArrayList<>();
+            }
+        } else {
+            return null;
+        }
+    }
+
+
+
+
+
+    public ArrayList<File> ls(String directory) {
+
+
+
+        ArrayList<File> folders = LS(directory, false);
+        
+        if (folders != null && !folders.isEmpty()) {
+            printFolders(folders);
+            return folders;
+        } else if (folders != null) {
+            return new ArrayList<>();
+        } else {
+            return null;
+        }
+
+    }
+
+    public ArrayList<File> ls(String directory, char op) {
+
+        boolean allFiles = op == 'a';
+
+        ArrayList<File> folders = LS(directory, allFiles);
+
+
+
+        if (folders != null && !folders.isEmpty()) {
+
+            if (op == 'r') {
+                Collections.reverse(folders);
+            }
+
+            printFolders(folders);
+            return folders;
+        } else if (folders != null) {
+            return new ArrayList<>();
+        } else {
+            return null;
         }
 
     }
 
 
-    public void lsHandler(String directory) {
-        // get list from here from ls
-    }
-
-    public void lsHandler(String directory, char op) {
+    // `ls -a -r path` or `ls -r -a path`
+    public ArrayList<File> ls(String directory, char op1, char op2) {
         // get list from here ls
+        boolean allFiles = (op1 == 'a' || op2 == 'a') ;
+
+        ArrayList<File> folders = LS(directory, true);
+
+
+        if (folders != null && !folders.isEmpty()) {
+
+            Collections.reverse(folders);
+
+            printFolders(folders);
+            return folders;
+        } else if (folders != null) {
+            return new ArrayList<>();
+        } else {
+            return null;
+        }
     }
 
-    public void lsHandler(String directory, char op1, char op2) {
-        // get list from here ls
-    }
-
-
-    private File[] getAllFileAndDirectories(String path) {
-
-        // Creating A file object for directory
-        File directoryPath = new File(path);
-        return directoryPath.listFiles(folder -> folder.isDirectory() && !folder.getName().startsWith("."));
-    }
 
     private boolean checkPath(String path) {
         return Files.exists(Path.of(path));
     }
 
     // print directories name in color on console blue
-    private void printAllDirectories(String path) {
+    private ArrayList<File> getAllFileAndDirectories(String path, boolean allFiles) {
 
-        boolean isValidPath = checkPath(path);
-        if (isValidPath) {
+        // Creating A file object for directory
+        File directoryPath = new File(path);
 
-            File[] directoryPath = getAllFileAndDirectories(path);
-            printFolders(directoryPath);
-            System.out.println();
-            return;
+        // filter every folder starts with `.`
+        File[] folders = directoryPath.listFiles();
+
+        if (!allFiles) {
+            folders = directoryPath.listFiles(folder -> folder.isDirectory() && !folder.getName().startsWith("."));
         }
 
-        System.out.println("Path Invalid");
+        if (folders != null)
+            return new ArrayList<>(Arrays.asList(folders));
+        else
+            return new ArrayList<>();
+
+
     }
 
-    private void printFolders(File[] Folders) {
+    private void printFolders(ArrayList<File> Folders) {
         for (File folder : Folders) {
-            System.out.print(STR."\{ANSI_BLUE + folder.getName() + ANSI_RESET}/     ");
+            if (folder.isDirectory()) {
+                System.out.print(STR."\{ANSI_BLUE + folder.getName() + ANSI_RESET}/     ");
+            } else {
+                System.out.print(STR."\{folder.getName()}/     ");
+
+            }
         }
+        System.out.println();
     }
 
     // use when you want to add new path to current path like => ./path
     private String addNewPath(String directory_name) {
-
         boolean isDirectoryChanged = false;
 
-        File newDirectory = new File(directory_name).getAbsoluteFile();
+
+        String currentPath = System.getProperty("user.dir");
+
+        File newPath = new File(currentPath,"user.dir").getAbsoluteFile();
+        return newPath.getAbsolutePath();
+
 
         // the new path to the current path
-        return System.setProperty("user.dir", newDirectory.getAbsolutePath()) + unix  + directory_name;
+//        String newPath = System.setProperty("user.dir", newDirectory.getAbsolutePath()) + unix  + directory_name;
+
+//        return newPath;
     }
+
 
 
 //    // Filter hidden Folders based on `.`  using filter function

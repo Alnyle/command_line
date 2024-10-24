@@ -22,6 +22,8 @@ public class LSDF {
         // get the path of the current directory
         String path = Shell.currentPath;
 
+
+
         // list of directories to current path
         String[] directories = path.split("\\\\");
 
@@ -33,18 +35,20 @@ public class LSDF {
         // Use StringBuilder store path of new path
         StringBuilder newPath = new StringBuilder();
 
-        if (checkPath(directory)) {
+
+        if (checkPath(directory) && !directory.equals("..")) {
             File folder = new File(directory);
-
-
             return folder.getAbsolutePath();
         }
 
         if (directory.equals("..") || directory.equals("../")) {
 
+
+            System.out.println("Problem here");
             //remove last directory to change
             for (int i = 0; i < directories.length - 1; i++) {
                 newPath.append(directories[i]).append("\\");
+                System.out.println(directories[i]);
             }
             newCurrentPath = newPath.toString();
             return newCurrentPath;
@@ -106,7 +110,7 @@ public class LSDF {
         } else if (!directory.startsWith("./") && !directory.isEmpty()) {
 
             String[] newDirectory = directory.split("/");
-
+            System.out.println(directory + " here ");
             if (newDirectory.length == 1) {
                 newPath.append(newDirectory[0]).append("\\");
 
@@ -278,7 +282,7 @@ public class LSDF {
             File newPath = new File(currentPath,directory_name).getAbsoluteFile();
             return newPath.getAbsolutePath();
         } else {
-            File newPath = new File(currentPath,"user.dir").getAbsoluteFile();
+            File newPath = new File(currentPath,directory_name).getAbsoluteFile();
             return newPath.getAbsolutePath();
         }
     }

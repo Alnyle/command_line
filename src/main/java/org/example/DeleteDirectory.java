@@ -6,17 +6,19 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class CreateDirectory {
+public class DeleteDirectory {
 
     private final LSDF lsdf;
 
-    public CreateDirectory() {
+    public DeleteDirectory() {
         this.lsdf = new LSDF();
     }
 
-    public boolean mkdir(String directory) {
+    public boolean rmdir(String directory) {
+
 
         String path = directory;
+
 
 
         Path folderPath = Paths.get(directory);
@@ -25,24 +27,32 @@ public class CreateDirectory {
             folderPath =  Paths.get(path);
         }
 
-        if (Files.exists(folderPath)) {
+
+        if (!Files.exists(folderPath)) {
             if (Files.isDirectory(folderPath)) {
                 System.out.println(STR."Directory already exists: \{folderPath}");
                 return false;
             }
         }
 
-        try {
-            Files.createDirectories(folderPath);
-            return true;
-        } catch (IOException e) {
-            return false;
+        boolean isDelete = deleteDirectory(folderPath.toFile());
+
+
+        if (!isDelete) {
+            System.out.println("Invalid path");
         }
+        return isDelete;
     }
 
-
-
-
+    boolean deleteDirectory(File directoryToBeDeleted) {
+        File[] allContents = directoryToBeDeleted.listFiles();
+        if (allContents != null) {
+            for (File file : allContents) {
+                deleteDirectory(file);
+            }
+        }
+        return directoryToBeDeleted.delete();
+    }
 
 
 

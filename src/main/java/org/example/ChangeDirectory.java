@@ -43,6 +43,7 @@ public class ChangeDirectory {
                     newCurrentPath = newPath.toString();
                     checkAndChangeDirectory(newCurrentPath);
 
+
                 } else {
                     // if path not valid
                     System.out.println("Path Invalid");
@@ -113,19 +114,29 @@ public class ChangeDirectory {
 
             String[] newDirectory = directory.split("/");
 
-            if (newDirectory.length == 1) {
-
+            if (newDirectory.length == 1 && !directory.contains("\\")) {
 
                 newPath.append(Shell.currentPath).append("\\");
                 newPath.append(newDirectory[0]).append("\\");
-
-
 
                 if (!newPath.isEmpty()) {
                     newCurrentPath = newPath.toString();
                     checkAndChangeDirectory(newCurrentPath);
                 }
-            } else {
+            }
+            else if (checkPath(directory)) {
+
+                File newDirectorys = new File(directory).getAbsoluteFile();
+
+                String currentPath = newDirectorys.getAbsolutePath();
+
+                Shell.setPath(String.valueOf(newDirectorys));
+                System.out.println(Shell.currentPath);
+                System.setProperty(Shell.currentPath, newDirectorys.getAbsolutePath());
+
+
+            }
+            else {
                 System.out.println("Invalid Path");
             }
 
@@ -144,12 +155,17 @@ public class ChangeDirectory {
 
         String currentPath = newDirectory.getAbsolutePath();
 
-        System.out.println(Shell.currentPath);
+
 
         // change directory and check if directory changed
         System.setProperty(Shell.currentPath, newDirectory.getAbsolutePath());
         Shell.setPath(String.valueOf(newDirectory));
+        System.out.println(Shell.currentPath);
         return true;
+    }
+
+    private boolean checkPath(String path) {
+        return Files.exists(Path.of(path));
     }
 
     private void checkAndChangeDirectory(String newCurrentPath) {

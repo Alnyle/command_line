@@ -143,8 +143,6 @@ public class LSDF {
     public ArrayList<File> LS(String directory, boolean allFiles) {
 
 
-        System.out.println(directory);
-
         // get the path of the directory
         String path = pathHandler(directory);
 
@@ -234,12 +232,12 @@ public class LSDF {
     }
 
 
-    private boolean checkPath(String path) {
+    public boolean checkPath(String path) {
         return Files.exists(Path.of(path));
     }
 
     // print directories name in color on console blue
-    private ArrayList<File> getAllFileAndDirectories(String path, boolean allFiles) {
+    public ArrayList<File> getAllFileAndDirectories(String path, boolean allFiles) {
 
         // Creating A file object for directory
         File directoryPath = new File(path);
@@ -248,7 +246,7 @@ public class LSDF {
         File[] folders = directoryPath.listFiles();
 
         if (!allFiles) {
-            folders = directoryPath.listFiles(folder -> folder.isDirectory() && !folder.getName().startsWith("."));
+            folders = directoryPath.listFiles(folder -> !folder.getName().startsWith("."));
         }
 
         if (folders != null)

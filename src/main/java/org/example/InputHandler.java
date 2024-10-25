@@ -79,7 +79,8 @@ public class InputHandler {
                         listDirectoriesFiles.ls(Shell.currentPath, 'a');
                     } else if (arguments[1].equals("-r")) {
                         listDirectoriesFiles.ls(Shell.currentPath, 'r');
-                    } else {
+                    }
+                    else {
                         listDirectoriesFiles.ls(arguments[1]);
                     }
 
@@ -94,9 +95,82 @@ public class InputHandler {
                         listDirectoriesFiles.ls(arguments[2], 'a');
                     } else if (arguments[1].equals("-r")) {
                         listDirectoriesFiles.ls(arguments[2], 'r');
+                    } else if (arguments[1].equals(">")) {
+                        wirteToFile.listRedirectOutPut(Shell.currentPath ,arguments[2], ">", false, false);
+                    } else if (arguments[1].equals(">>")) {
+                        wirteToFile.listRedirectOutPut(Shell.currentPath,arguments[2], ">>", false, false);
                     }
                 } else if (arguments.length == 4) {
-                    listDirectoriesFiles.ls(arguments[3], 'r', 'a');
+                    // ls .. >> path
+                    // ls -a -r path
+                    // ls -a > path
+                    if (arguments[2].equals(">") && (arguments[1].equals("-r") || arguments[1].equals("-a")))  {
+                        if (arguments[1].equals("-a")) {
+                            wirteToFile.listRedirectOutPut(Shell.currentPath,arguments[3], ">", false, true);
+                        } else {
+                            wirteToFile.listRedirectOutPut(Shell.currentPath,arguments[3], ">", true, false);
+                            return;
+                        }
+                        System.out.println("Invalid command");
+
+                    } else if (arguments[2].equals(">>") && (arguments[1].equals("-r") || arguments[1].equals("-a"))) {
+                        if (arguments[1].equals("-a")) {
+                            wirteToFile.listRedirectOutPut(Shell.currentPath,arguments[3], ">>", false, true);
+                        } else {
+                            wirteToFile.listRedirectOutPut(Shell.currentPath,arguments[3], ">>", true, false);
+                            return;
+                        }
+
+                        System.out.println("Invalid command");
+
+                    }
+                    else if (arguments[2].equals(">")) {
+                        wirteToFile.listRedirectOutPut(arguments[1],arguments[3], ">", false, false);
+                    } else if (arguments[2].equals(">>")) {
+                        wirteToFile.listRedirectOutPut(arguments[1],arguments[3], ">>", false, false);
+                    } else if ((arguments[1].equals("-a") && arguments[2].equals("-r")) || (arguments[1].equals("-r") && arguments[2].equals("-a"))) {
+                        listDirectoriesFiles.ls(arguments[3], 'r', 'a');
+                    } else {
+                        System.out.println("Invalid command");
+                    }
+                } else if (arguments.length == 5) {
+                    // ls -a -r > path
+                    // ls -a .. > path
+
+                    if (arguments[3].equals(">")) {
+                        if ((arguments[1].equals("-a") && arguments[2].equals("-r")) || (arguments[1].equals("-r") && arguments[2].equals("-a"))) {
+                            wirteToFile.listRedirectOutPut(Shell.currentPath,arguments[4], ">", true, true);
+                        } else if (arguments[1].equals("-a") || arguments[1].equals("-r")) {
+                            wirteToFile.listRedirectOutPut(arguments[2],arguments[4], ">>", true, true);
+                        } else {
+                            System.out.println("Invalid command");
+                        }
+                    } else if (arguments[3].equals(">>")) {
+                        if ((arguments[1].equals("-a") && arguments[2].equals("-r")) || (arguments[1].equals("-r") && arguments[2].equals("-a"))) {
+                            wirteToFile.listRedirectOutPut(Shell.currentPath,arguments[4], ">>", true, true);
+                        }  else if (arguments[1].equals("-a") || arguments[1].equals("-r")) {
+                            wirteToFile.listRedirectOutPut(arguments[2],arguments[4], ">>", true, true);
+                        }
+                        else {
+                            System.out.println("Invalid command");
+                        }
+                    }
+                    else {
+                        System.out.println("Invalid command");
+                    }
+                }
+                else if (arguments.length == 6) {
+                    // ls -a -r ..  > path
+                    // ls -r -a .. > path
+                    if ((arguments[1].equals("-a") && arguments[2].equals("-r")) || (arguments[1].equals("-r") && arguments[2].equals("-a"))) {
+                        if (arguments[4].equals(">")) {
+                            wirteToFile.listRedirectOutPut(arguments[3],arguments[5], ">", true, true);
+                        } else if (arguments[4].equals(">>")) {
+                            wirteToFile.listRedirectOutPut(arguments[3],arguments[5], ">>", true, true);
+                        }
+                    } else {
+                        System.out.println("Invalid command");
+                    }
                 }
             }
             case "mkdir" -> createDirectory.mkdir(arguments[1]);

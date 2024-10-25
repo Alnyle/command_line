@@ -15,6 +15,7 @@ public class InputHandler {
     private final DeleteDirectory deleteDirectory;
 
     private final CreateFile createFile;
+    private final RemoveFile removeFile;
 
 
     public InputHandler() {
@@ -23,6 +24,7 @@ public class InputHandler {
         createDirectory = new CreateDirectory();
         deleteDirectory = new DeleteDirectory();
         createFile = new CreateFile();
+        removeFile = new RemoveFile();
     }
 
 
@@ -65,7 +67,7 @@ public class InputHandler {
 
 
                     if ((arguments[1].equals("-a") && arguments[2].equals("-r")) || (arguments[1].equals("-r") && arguments[2].equals("-a"))) {
-                        listDirectoriesFiles.ls("", 'a', 'r');
+                        listDirectoriesFiles.ls(Shell.currentPath, 'a', 'r');
                     }
                     // check on char
                     else if (arguments[1].equals("-a")) {
@@ -80,6 +82,7 @@ public class InputHandler {
             case "mkdir" -> createDirectory.mkdir(arguments[1]);
             case "rmdir" -> deleteDirectory.rmdir(arguments[1]);
             case "touch" -> createFile.touch(arguments[1]);
+            case "rm" -> removeFile.rm(arguments[1]);
         }
     }
 

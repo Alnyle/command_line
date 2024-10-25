@@ -17,6 +17,8 @@ public class InputHandler {
     private final CreateFile createFile;
     private final RemoveFile removeFile;
 
+    private final Cat readFile;
+
 
     public InputHandler() {
         changeDirectory = new ChangeDirectory();
@@ -25,6 +27,7 @@ public class InputHandler {
         deleteDirectory = new DeleteDirectory();
         createFile = new CreateFile();
         removeFile = new RemoveFile();
+        readFile = new Cat();
     }
 
 
@@ -83,6 +86,7 @@ public class InputHandler {
             case "rmdir" -> deleteDirectory.rmdir(arguments[1]);
             case "touch" -> createFile.touch(arguments[1]);
             case "rm" -> removeFile.rm(arguments[1]);
+            case "cat" -> readFile.cat(arguments[1]);
         }
     }
 

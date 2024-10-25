@@ -9,9 +9,10 @@ public class RemoveFile {
 
     private final LSDF lsdf;
 
-    public RemoveFile() {
-        this.lsdf = new LSDF();
+    public RemoveFile(LSDF lsdf) {
+        this.lsdf = lsdf;
     }
+
 
     public boolean rm(String path) throws IOException {
 

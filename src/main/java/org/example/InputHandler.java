@@ -19,15 +19,20 @@ public class InputHandler {
 
     private final Cat readFile;
 
+    private final PrintCurrentDirectory PWD;
+
+    private final RedirectOutputWrite wirteToFile;
 
     public InputHandler() {
         changeDirectory = new ChangeDirectory();
         listDirectoriesFiles = new LSDF();
-        createDirectory = new CreateDirectory();
-        deleteDirectory = new DeleteDirectory();
-        createFile = new CreateFile();
-        removeFile = new RemoveFile();
-        readFile = new Cat();
+        createDirectory = new CreateDirectory(listDirectoriesFiles);
+        deleteDirectory = new DeleteDirectory(listDirectoriesFiles);
+        createFile = new CreateFile(listDirectoriesFiles);
+        removeFile = new RemoveFile(listDirectoriesFiles);
+        readFile = new Cat(listDirectoriesFiles);
+        PWD = new PrintCurrentDirectory();
+        wirteToFile = new RedirectOutputWrite(listDirectoriesFiles, PWD);
     }
 
 
@@ -40,13 +45,26 @@ public class InputHandler {
         // responsible for change changing directory
 
         //        System.out.print("result = ");
-        for (String str : arguments) {
-            System.out.print(str + ", ");
-        }
+//        for (String str : arguments) {
+//            System.out.print(str + ", ");
+//        }
 
 
         switch (arguments[0]) {
             case "cd" -> changeDirectory.cd(arguments[1]);
+
+            case "pwd" -> {
+                if (arguments.length == 1) {
+                    PWD.pwd();
+                }
+
+                if (arguments.length == 3) {
+                    if (arguments[1].equals(">")) {
+                        wirteToFile.redirectOutPut(arguments[2], '>');
+                    }
+                }
+            }
+
             case "ls" -> {
 
 
@@ -60,10 +78,7 @@ public class InputHandler {
                     } else if (arguments[1].equals("-r")) {
                         listDirectoriesFiles.ls(Shell.currentPath, 'r');
                     } else {
-
-
                         listDirectoriesFiles.ls(arguments[1]);
-
                     }
 
                 } else if (arguments.length == 3) {

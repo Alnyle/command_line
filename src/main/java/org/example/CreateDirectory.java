@@ -10,9 +10,10 @@ public class CreateDirectory {
 
     private final LSDF lsdf;
 
-    public CreateDirectory() {
-        this.lsdf = new LSDF();
+    public CreateDirectory(LSDF lsdf) {
+        this.lsdf = lsdf;
     }
+
 
     public boolean mkdir(String directory) {
 

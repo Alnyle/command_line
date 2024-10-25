@@ -136,7 +136,7 @@ public class LSDF {
             return newCurrentPath;
         }
 
-        return "Invalid Path";
+        return "Invalid path";
     }
 
     // ls path

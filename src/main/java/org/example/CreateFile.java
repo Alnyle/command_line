@@ -11,9 +11,10 @@ public class CreateFile {
 
     private final LSDF lsdf;
 
-    public CreateFile() {
-        this.lsdf = new LSDF();
+    public CreateFile(LSDF lsdf) {
+        this.lsdf = lsdf;
     }
+
 
     public boolean touch(String directory) throws IOException {
 

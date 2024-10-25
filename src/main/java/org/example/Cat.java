@@ -9,9 +9,10 @@ public class Cat {
 
     private final LSDF lsdf;
 
-    public Cat() {
-        this.lsdf = new LSDF();
+    public Cat(LSDF lsdf) {
+        this.lsdf = lsdf;
     }
+
 
     public boolean cat(String path) throws IOException {
 

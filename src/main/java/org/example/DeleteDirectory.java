@@ -10,9 +10,10 @@ public class DeleteDirectory {
 
     private final LSDF lsdf;
 
-    public DeleteDirectory() {
-        this.lsdf = new LSDF();
+    public DeleteDirectory(LSDF lsdf) {
+        this.lsdf = lsdf;
     }
+
 
     public boolean rmdir(String directory) {
 

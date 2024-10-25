@@ -21,7 +21,7 @@ public class RedirectOutputWrite {
 
 
     // special for pwd
-    boolean redirectOutPut(String path, char op) throws IOException {
+    boolean redirectOutPut(String path, String op) throws IOException {
 
 
         Path absolutePath = Paths.get(path);
@@ -49,7 +49,7 @@ public class RedirectOutputWrite {
 
 
                 // if op == '>' override file content
-                if (op == '>') {
+                if (op.equals(">")) {
                     return overrideFile(absolutePath, fileContent);
                 } else {
                     File file = new File(String.valueOf(absolutePath));
@@ -62,7 +62,7 @@ public class RedirectOutputWrite {
 
 
             if (file.createNewFile()) {
-                if (op == '>') {
+                if (op.equals(">")) {
                     return overrideFile(absolutePath, fileContent);
                 } else {
                    return appendFile(file, fileContent);

@@ -60,7 +60,9 @@ public class InputHandler {
 
                 if (arguments.length == 3) {
                     if (arguments[1].equals(">")) {
-                        wirteToFile.redirectOutPut(arguments[2], '>');
+                        wirteToFile.redirectOutPut(arguments[2], ">");
+                    } else if (arguments[1].equals(">>")) {
+                        wirteToFile.redirectOutPut(arguments[2], ">>");
                     }
                 }
             }

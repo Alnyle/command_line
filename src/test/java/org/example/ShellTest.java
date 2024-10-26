@@ -79,7 +79,7 @@ class ShellTest {
         InputHandler inputHandler = shell.inputHandler;
 
         if (isLinux()) {
-            boolean isCreated = inputHandler.createDirectory.mkdir(("/home/user/Documents/Dummy"));
+            boolean isCreated = inputHandler.createDirectory.mkdir("/home/user/Documents/Dummy");
             assertTrue(isCreated, "This is command should create Directory in the directory");
         } else {
             String CreateDirectoryAt = STR."\{inputHandler.PWD.pwd()}\\Dummy";
@@ -94,13 +94,48 @@ class ShellTest {
         InputHandler inputHandler = shell.inputHandler;
 
         if (isLinux()) {
-            boolean isCreated = inputHandler.deleteDirectory.rmdir(("/home/user/Documents/Dummy"));
+            boolean isCreated = inputHandler.deleteDirectory.rmdir("/home/user/Documents/Dummy");
             assertTrue(isCreated, "This is command should create Directory in the directory");
         } else {
             String DeleteDirectoryAt = STR."\{inputHandler.PWD.pwd()}\\Dummy";
             boolean isCreated = inputHandler.deleteDirectory.rmdir(DeleteDirectoryAt);
             assertTrue(isCreated, "This is command should Delete Directory in the directory");
         }
+    }
+
+    @Test
+    void testRm() throws IOException {
+
+        Shell.restPath();
+        Shell shell = new Shell();
+        InputHandler inputHandler = shell.inputHandler;
+
+        if (isLinux()) {
+            boolean isCreated = inputHandler.removeFile.rm("/home/user/Documents/test.txt");
+            assertTrue(isCreated, "This is command should create Directory in the directory");
+        } else {
+            String DeleteFileAt = STR."\{inputHandler.PWD.pwd()}\\test.txt";
+            boolean isCreated = inputHandler.removeFile.rm(DeleteFileAt);
+            assertTrue(isCreated, "This is command should Delete File in the directory");
+        }
+    }
+
+    @Test
+    void testRedirectOutput() throws IOException  {
+
+        Shell.restPath();
+        Shell shell = new Shell();
+        InputHandler inputHandler = shell.inputHandler;
+
+        if (isLinux()) {
+            inputHandler.handleInput("ls \"/home/user/Documents\" > listOfFile.txt");
+
+        } else {
+            String DeleteFileAt = STR."\{inputHandler.PWD.pwd()}\\test.txt";
+            boolean isCreated = inputHandler.removeFile.rm(DeleteFileAt);
+            assertTrue(isCreated, "This is command should Delete File in the directory");
+        }
+
     }
 
 

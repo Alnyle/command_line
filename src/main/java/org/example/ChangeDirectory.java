@@ -14,9 +14,9 @@ public class ChangeDirectory {
         String path = Shell.currentPath;
 
         // list of directories to current path
-        String[] directories = path.split("\\\\");
+        String[] directories = Shell.isWindows() ? path.split("\\\\") : path.split("/");
 
-
+        String splitOperator = Shell.isWindows() ? "\\" :  "/" ;
         // getRoot() => change here
 
 
@@ -36,7 +36,7 @@ public class ChangeDirectory {
 
                 //remove last directory to change
                 for (int i = 0; i < directories.length - 1; i++) {
-                    newPath.append(directories[i]).append("\\");
+                    newPath.append(directories[i]).append(splitOperator);
                 }
                 // Remove the trailing separator
                 if (!newPath.isEmpty()) {
@@ -77,12 +77,12 @@ public class ChangeDirectory {
 
                 // subtract from old path directories based on number of `..`
                 for (int p = 0; p < directories.length - backwords; p++) {
-                    newPath.append(directories[p]).append("\\");
+                    newPath.append(directories[p]).append(splitOperator);
                 }
 
                 // then add the new path
                 for (int p = i; p < newDirectory.length; p++) {
-                    newPath.append(newDirectory[p]).append("\\");
+                    newPath.append(newDirectory[p]).append(splitOperator);
                 }
 
 
@@ -100,7 +100,7 @@ public class ChangeDirectory {
 
             // start new path after './'
             for (int p = 1; p < newDirectory.length; p++) {
-                newPath.append(newDirectory[p]).append("\\");
+                newPath.append(newDirectory[p]).append(splitOperator);
             }
 
             if (!newPath.isEmpty()) {
@@ -114,10 +114,10 @@ public class ChangeDirectory {
 
             String[] newDirectory = directory.split("/");
 
-            if (newDirectory.length == 1 && !directory.contains("\\")) {
+            if (newDirectory.length == 1 && !directory.contains(splitOperator)) {
 
-                newPath.append(Shell.currentPath).append("\\");
-                newPath.append(newDirectory[0]).append("\\");
+                newPath.append(Shell.currentPath).append(splitOperator);
+                newPath.append(newDirectory[0]).append(splitOperator);
 
                 if (!newPath.isEmpty()) {
                     newCurrentPath = newPath.toString();

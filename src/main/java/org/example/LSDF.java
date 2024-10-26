@@ -13,7 +13,7 @@ public class LSDF {
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_BLUE = "\u001B[34m";
 
-
+    String splitOperator = Shell.isLinux() ? "/" : "\\";
 
 
     // main ls
@@ -25,7 +25,7 @@ public class LSDF {
 
 
         // list of directories to current path
-        String[] directories = path.split("\\\\");
+        String[] directories = Shell.isWindows() ? path.split("\\\\") : path.split("/");
 
         // getRoot() => change here
 
@@ -47,7 +47,7 @@ public class LSDF {
             System.out.println("Problem here");
             //remove last directory to change
             for (int i = 0; i < directories.length - 1; i++) {
-                newPath.append(directories[i]).append("\\");
+                newPath.append(directories[i]).append(splitOperator);
                 System.out.println(directories[i]);
             }
             newCurrentPath = newPath.toString();
@@ -76,12 +76,12 @@ public class LSDF {
 
                 // subtract from old path directories based on number of `..`
                 for (int p = 0; p < directories.length - backwords; p++) {
-                    newPath.append(directories[p]).append("\\");
+                    newPath.append(directories[p]).append(splitOperator);
                 }
 
                 // then add the new path
                 for (int p = i; p < newDirectory.length; p++) {
-                    newPath.append(newDirectory[p]).append("\\");
+                    newPath.append(newDirectory[p]).append(splitOperator);
                 }
 
 
@@ -97,7 +97,7 @@ public class LSDF {
 
             // start new path after './'
             for (int p = 1; p < newDirectory.length; p++) {
-                newPath.append(newDirectory[p]).append("\\");
+                newPath.append(newDirectory[p]).append(splitOperator);
             }
 
             if (createFolder.length > 0) {
@@ -112,7 +112,7 @@ public class LSDF {
             String[] newDirectory = directory.split("/");
             System.out.println(directory + " here ");
             if (newDirectory.length == 1) {
-                newPath.append(newDirectory[0]).append("\\");
+                newPath.append(newDirectory[0]).append(splitOperator);
 
                 // dealing create folder path => make full path with name
                 if (createFolder.length > 0) {

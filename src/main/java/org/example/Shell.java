@@ -9,8 +9,9 @@ import java.net.UnknownHostException;
 
 public class Shell {
 
+
     static String currentPath;
-    private static String osNaame = System.getProperty("os.name");
+    private static String osName = System.getProperty("os.name");
 
     private final String USERNAME = System.getProperty("user.name");
 
@@ -24,11 +25,13 @@ public class Shell {
     public static final String ANSI_GREEN = "\u001B[32m";
     public static final String ANSI_PURPLE = "\u001B[35m";
 
+    public static final String defaultPath = String.valueOf(new File(System.getProperty("user.dir")));
+
     static {
         currentPath = String.valueOf(new File(System.getProperty("user.dir")));
     }
 
-    private final InputHandler inputHandler = new InputHandler();
+    final InputHandler inputHandler = new InputHandler();
 
     public Shell() throws UnknownHostException {
     }
@@ -72,15 +75,19 @@ public class Shell {
     }
 
     public static boolean isWindows() {
-        return (osNaame.startsWith("Windows"));
+        return (osName.startsWith("Windows"));
     }
 
     public static boolean isLinux() {
-        return (osNaame.startsWith("Linux"));
+        return (osName.startsWith("Linux"));
     }
 
     public void handleInput(String command) throws IOException {
         inputHandler.handleInput(command);
+    }
+
+    public static void restPath() {
+        currentPath = defaultPath;
     }
 
     public static void setPath(String newPath) {

@@ -9,19 +9,19 @@ import java.util.regex.Pattern;
 public class InputHandler {
 
 
-    private final ChangeDirectory changeDirectory;
-    private final LSDF listDirectoriesFiles;
-    private final CreateDirectory createDirectory;
-    private final DeleteDirectory deleteDirectory;
+    final ChangeDirectory changeDirectory;
+    final LSDF listDirectoriesFiles;
+    final CreateDirectory createDirectory;
+    final DeleteDirectory deleteDirectory;
 
-    private final CreateFile createFile;
-    private final RemoveFile removeFile;
+    final CreateFile createFile;
+    final RemoveFile removeFile;
 
-    private final Cat readFile;
+    final Cat readFile;
 
-    private final PrintCurrentDirectory PWD;
+    final PrintCurrentDirectory PWD;
 
-    private final RedirectOutputWrite wirteToFile;
+    final RedirectOutputWrite wirteToFile;
 
     public InputHandler() {
         changeDirectory = new ChangeDirectory();

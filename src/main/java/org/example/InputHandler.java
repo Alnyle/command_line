@@ -23,6 +23,8 @@ public class InputHandler {
 
     final RedirectOutputWrite wirteToFile;
 
+    final MoveFile moveFile;
+
     public InputHandler() {
         changeDirectory = new ChangeDirectory();
         listDirectoriesFiles = new LSDF();
@@ -33,6 +35,7 @@ public class InputHandler {
         readFile = new Cat(listDirectoriesFiles);
         PWD = new PrintCurrentDirectory();
         wirteToFile = new RedirectOutputWrite(listDirectoriesFiles, PWD);
+        moveFile = new MoveFile(listDirectoriesFiles, PWD);
     }
 
 
@@ -198,6 +201,14 @@ public class InputHandler {
                     }
                 }
 
+            }
+
+            case "mv" -> {
+                if (arguments.length == 3) {
+                    moveFile.mv(arguments[1], arguments[2]);
+                } else {
+                    System.out.println("Invalid command");
+                }
             }
 
             default -> System.out.println("Invalid Input");

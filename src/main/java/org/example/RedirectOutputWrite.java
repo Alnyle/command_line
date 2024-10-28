@@ -23,7 +23,7 @@ public class RedirectOutputWrite {
     }
 
 
-    // special for pwd
+    // special for pwd handle "pwd > and >> path"
     boolean redirectOutPut(String path, String op) throws IOException {
 
 

@@ -35,16 +35,6 @@ public class CreateFile {
         }
 
 
-//        Path path1 = Paths.get(directory);
-//        Path path2 = Paths.get(path);
-//
-//        // Get the common part of the paths
-//        Path relativePath = path1.relativize(path1.resolve(path2)).normalize();
-//
-//        Path mergedPath = path1.resolveSibling(relativePath);
-//
-//        System.out.println(String.valueOf(mergedPath) + "problem here");
-//
         File file = new File(String.valueOf(filePath));
 
         if (file.createNewFile()) {
@@ -55,15 +45,6 @@ public class CreateFile {
             return false;
         }
 
-//        try {
-//            Files.createFile(filePath);
-//            return true;
-//        } catch (IOException e) {
-//            return false;
-//        }
-
-//        return true;
     }
-
 
 }

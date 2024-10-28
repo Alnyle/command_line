@@ -97,7 +97,7 @@ public class RedirectOutputWrite {
             absolutePath =  Paths.get(TargetPath);
         }
 
-        System.out.println(String.valueOf(absolutePath));
+//        System.out.println(String.valueOf(absolutePath));
 
 
         // Check if the path is a directory
@@ -139,7 +139,133 @@ public class RedirectOutputWrite {
     }
 
 
-    boolean overrideFile(String file,ArrayList<File> fileContent) {
+    // handle "cat file_Path > another_FileP_ath"
+    public boolean catRedirect(String fromPath,String TargetPath, String mode) throws IOException {
+
+        // check if the first file path absolute path (full path)
+        Path absolutePath = Paths.get(fromPath);
+        if (!absolutePath.isAbsolute()) {
+            fromPath = lsdf.pathHandler(fromPath, true);
+            absolutePath =  Paths.get(fromPath);
+        }
+
+        // check if the first file is exist before read from it
+        if (Files.exists(absolutePath)) {
+            if (Files.isRegularFile(absolutePath)) {
+
+                // check if the second path absolute path (full path)
+                Path absolutePath2 = Paths.get(TargetPath);
+                if (!absolutePath2.isAbsolute()) {
+                    TargetPath = lsdf.pathHandler(TargetPath, true);
+                    if (TargetPath.equals("Invalid path")) {
+                        return false;
+                    }
+
+                    absolutePath2 =  Paths.get(TargetPath);
+                }
+
+                // Check if the path is a directory
+                if (Files.isDirectory(absolutePath2)) {
+                    System.out.println("Invalid path: this is a directory path");
+                    return false;
+                }
+
+                if (Files.exists(absolutePath2)) {
+
+                    if (Files.isRegularFile(absolutePath2)) {
+
+
+                        // if op == '>' override file content
+                        if (mode.equals(">")) {
+                            return catOverrideFile(absolutePath.toFile(), absolutePath2.toFile());
+
+                        } else {
+                            // append to file content
+                            File file = new File(String.valueOf(absolutePath2));
+                            return catAppendFile(absolutePath.toFile(), absolutePath2.toFile());
+                        }
+                    }
+                } else {
+
+                    File file = new File(String.valueOf(absolutePath2));
+                    if (file.createNewFile()) {
+                        if (mode.equals(">")) {
+                            return catOverrideFile(absolutePath.toFile(), absolutePath2.toFile());
+                        } else {
+                            return catAppendFile(absolutePath.toFile(), absolutePath2.toFile());
+                        }
+                    }
+
+                }
+                return true;
+            } else {
+                System.out.println("This a directory not a file");
+                return false;
+            }
+        } else {
+            System.out.println("File does exist");
+            return false;
+        }
+
+    }
+
+
+    boolean catOverrideFile(File a, File b) throws IOException {
+
+        FileInputStream in = new FileInputStream(a);
+        FileOutputStream out = new FileOutputStream(b);
+
+        try {
+            int n;
+
+
+            while ((n = in.read()) != -1) {
+
+                out.write(n);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (in != null) {
+
+
+                in.close();
+            }
+
+            if (out != null) {
+                out.close();
+            }
+        }
+
+        return true;
+    }
+
+
+    private boolean catAppendFile(File a, File b) throws IOException {
+
+        FileInputStream in = new FileInputStream(a);
+        FileWriter out = new FileWriter(b, true);
+        try {
+            int n;
+
+            while ((n = in.read()) != -1) {
+
+                out.write(n);
+            }
+        } catch (IOException e) {
+            System.out.println("unable to write to file");
+            return false;
+        } finally {
+            if (in != null) {
+
+                in.close();
+            }
+        }
+
+        return true;
+    }
+
+    private boolean overrideFile(String file,ArrayList<File> fileContent) {
 
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file)))
@@ -157,7 +283,7 @@ public class RedirectOutputWrite {
     }
 
 
-    boolean appendFile(File file,ArrayList<File> fileContent) throws IOException {
+    private boolean appendFile(File file,ArrayList<File> fileContent) throws IOException {
 
         FileWriter fr = new FileWriter(file, true);
 
@@ -174,7 +300,7 @@ public class RedirectOutputWrite {
     }
 
 
-    boolean overrideFile(Path file, String fileContent) {
+    private boolean overrideFile(Path file, String fileContent) {
 
         try {
             Files.writeString(file , fileContent);
@@ -186,7 +312,7 @@ public class RedirectOutputWrite {
 
     }
 
-    boolean appendFile(File file, String fileContent) {
+    private boolean appendFile(File file, String fileContent) {
 
         try {
 

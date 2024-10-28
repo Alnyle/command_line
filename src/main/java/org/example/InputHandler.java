@@ -101,27 +101,28 @@ public class InputHandler {
                         wirteToFile.listRedirectOutPut(Shell.currentPath,arguments[2], ">>", false, false);
                     }
                 } else if (arguments.length == 4) {
+
+                    // handle this cases
                     // ls .. >> path
                     // ls -a -r path
                     // ls -a > path
                     if (arguments[2].equals(">") && (arguments[1].equals("-r") || arguments[1].equals("-a")))  {
                         if (arguments[1].equals("-a")) {
                             wirteToFile.listRedirectOutPut(Shell.currentPath,arguments[3], ">", false, true);
+                            return;
                         } else {
                             wirteToFile.listRedirectOutPut(Shell.currentPath,arguments[3], ">", true, false);
                             return;
                         }
-                        System.out.println("Invalid command");
 
                     } else if (arguments[2].equals(">>") && (arguments[1].equals("-r") || arguments[1].equals("-a"))) {
                         if (arguments[1].equals("-a")) {
                             wirteToFile.listRedirectOutPut(Shell.currentPath,arguments[3], ">>", false, true);
+                            return;
                         } else {
                             wirteToFile.listRedirectOutPut(Shell.currentPath,arguments[3], ">>", true, false);
                             return;
                         }
-
-                        System.out.println("Invalid command");
 
                     }
                     else if (arguments[2].equals(">")) {
@@ -134,6 +135,8 @@ public class InputHandler {
                         System.out.println("Invalid command");
                     }
                 } else if (arguments.length == 5) {
+
+                    // handle this cases
                     // ls -a -r > path
                     // ls -a .. > path
 
@@ -177,7 +180,27 @@ public class InputHandler {
             case "rmdir" -> deleteDirectory.rmdir(arguments[1]);
             case "touch" -> createFile.touch(arguments[1]);
             case "rm" -> removeFile.rm(arguments[1]);
-            case "cat" -> readFile.cat(arguments[1]);
+
+            // cat path
+            // cat path > path
+            // cat path >> path
+            case "cat" -> {
+
+                if (arguments.length == 2) {
+                    readFile.cat(arguments[1]);
+                } else if (arguments.length == 4) {
+                    if (arguments[2].equals(">")) {
+                        wirteToFile.catRedirect(arguments[1], arguments[3], ">");
+                    } else if (arguments[2].equals(">>")) {
+                        wirteToFile.catRedirect(arguments[1], arguments[3], ">>");
+                    } else {
+                        System.out.println("Invalid command");
+                    }
+                }
+
+            }
+
+            default -> System.out.println("Invalid Input");
         }
     }
 

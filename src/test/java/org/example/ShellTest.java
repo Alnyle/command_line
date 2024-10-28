@@ -131,12 +131,35 @@ class ShellTest {
             inputHandler.handleInput("ls \"/home/user/Documents\" > listOfFile.txt");
 
         } else {
-            String DeleteFileAt = STR."\{inputHandler.PWD.pwd()}\\test.txt";
-            boolean isCreated = inputHandler.removeFile.rm(DeleteFileAt);
-            assertTrue(isCreated, "This is command should Delete File in the directory");
+            inputHandler.handleInput("ls -a > testDirectorOperator.txt");
+            String filePath = STR."\{inputHandler.PWD.pwd()}\\testDirectorOperator.txt";
+            File file = new File(filePath);
+            boolean isFileCreated = (file.exists() && !file.isDirectory());
+            assertTrue(isFileCreated, "This command should create if note exist and put inside it file contain list file in the current working directory");
         }
 
     }
+    @Test
+    void testRedirectOutputWithAppend() throws IOException  {
+
+        Shell.restPath();
+        Shell shell = new Shell();
+        InputHandler inputHandler = shell.inputHandler;
+
+        if (isLinux()) {
+            inputHandler.handleInput("ls \"/home/user/Documents\" >> listOfFile.txt");
+
+        } else {
+            inputHandler.handleInput("ls -a >> testDirectorOperator.txt");
+            String filePath = STR."\{inputHandler.PWD.pwd()}\\testDirectorOperator.txt";
+            File file = new File(filePath);
+            boolean isFileCreated = (file.exists() && !file.isDirectory());
+            assertTrue(isFileCreated, "This command should create if note exist and append (if it's already have content) inside it file contain list file in the current working directory");
+        }
+
+    }
+
+
 
 
 

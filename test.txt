@@ -1,6 +1,0 @@
-.git
-.gitignore
-.idea
-pom.xml
-src
-target

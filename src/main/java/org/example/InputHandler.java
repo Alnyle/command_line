@@ -35,7 +35,7 @@ public class InputHandler {
         readFile = new Cat(listDirectoriesFiles);
         PWD = new PrintCurrentDirectory();
         wirteToFile = new RedirectOutputWrite(listDirectoriesFiles, PWD);
-        moveFile = new MoveFile(listDirectoriesFiles, PWD);
+        moveFile = new MoveFile(listDirectoriesFiles);
     }
 
 

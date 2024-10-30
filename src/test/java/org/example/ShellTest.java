@@ -14,17 +14,21 @@ import static org.junit.jupiter.api.Assertions.*;
 class ShellTest {
 
 
-    //
+    // get current system name
     private static final String osName = System.getProperty("os.name");
 
+    // check is system is linux based system
     public static boolean isLinux() {
         return (osName.startsWith("Linux"));
     }
 
+
+    // test "cd" with valid directory path "directory name is `target`"
     @Test
     void testCd() throws IOException {
         Shell shell = new Shell();
         InputHandler inputHandler = shell.inputHandler;
+
 
         if (isLinux()) {
             shell.handleInput("cd \"/home/user/Documents\"");
@@ -37,7 +41,7 @@ class ShellTest {
         }
     }
 
-
+    // test "ls" without any arguments
     @Test
     void testLs() throws IOException {
 
@@ -45,13 +49,14 @@ class ShellTest {
         Shell shell = new Shell();
         InputHandler inputHandler = shell.inputHandler;
 
+        // get list of file and directories in passed path
+        ArrayList<File> files;
         if (isLinux()) {
-            ArrayList<File> files =  inputHandler.listDirectoriesFiles.LS("/home/user/Documents", true);
-            assertFalse(files.isEmpty(), "This is command should return the list of the files in the directory");
+            files = inputHandler.listDirectoriesFiles.LS("/home/user/Documents", true);
         } else {
-            ArrayList<File> files =  inputHandler.listDirectoriesFiles.LS(inputHandler.PWD.pwd(), true);
-            assertFalse(files.isEmpty(), "This is command should return the list of the files in the directory");
+            files = inputHandler.listDirectoriesFiles.LS(inputHandler.PWD.pwd(), true);
         }
+        assertFalse(files.isEmpty(), "This is command should return the list of the files in the directory");
     }
 
 
@@ -66,9 +71,54 @@ class ShellTest {
             boolean isCreated = inputHandler.createFile.touch(("/home/user/Documents/test.txt"));
             assertTrue(isCreated, "This is command should create file in the directory");
         } else {
+            // path to create file at
             String CreateFileAt = STR."\{inputHandler.PWD.pwd()}\\test.txt";
+
+            // create file and check is created
             boolean isCreated = inputHandler.createFile.touch(CreateFileAt);
             assertTrue(isCreated, "This is command should create file in the directory");
+        }
+    }
+
+
+    // path file name without file extension
+    @Test
+    void testTouchWithoutFileExtension() throws IOException {
+
+        Shell.restPath();
+        Shell shell = new Shell();
+        InputHandler inputHandler = shell.inputHandler;
+
+        if (isLinux()) {
+            boolean isCreated = inputHandler.createFile.touch(("/home/user/Documents/test"));
+            assertTrue(isCreated, "This is command should create file in the directory");
+        } else {
+            // path to create file at
+            String CreateFileAt = STR."\{inputHandler.PWD.pwd()}\\test";
+
+            // create file and check is created
+            boolean isCreated = inputHandler.createFile.touch(CreateFileAt);
+            assertTrue(isCreated, "This is command should create file in the directory");
+        }
+    }
+
+    // path file name without file extension
+    @Test
+    void testTouchInvalidPath() throws IOException {
+
+        Shell.restPath();
+        Shell shell = new Shell();
+        InputHandler inputHandler = shell.inputHandler;
+
+        // path to create file at "in this case path is invalid"
+        String invalid_Path = "some/path/any/where";
+
+        // create file and check is created
+        boolean isCreated = inputHandler.createFile.touch((invalid_Path));
+        if (isLinux()) {
+            assertTrue(isCreated, "This is command should create file in the directory");
+        } else {
+            assertFalse(isCreated, "This is command should not create file because path is not a valid path");
         }
     }
 
@@ -87,6 +137,22 @@ class ShellTest {
             assertTrue(isCreated, "This is command should create Directory in the directory");
         }
     }
+
+
+    // test "mkdir" pass file name with extension instead of file name
+    @Test
+    void testMkdirWithInvalidPath() throws IOException {
+        Shell.restPath();
+        Shell shell = new Shell();
+        InputHandler inputHandler = shell.inputHandler;
+
+        // path to create directory at "in this case path is invalid"
+        String invalid_Path = "some/path/any/where";
+        boolean isCreated = inputHandler.createDirectory.mkdir(invalid_Path);
+        assertFalse(isCreated, STR."This is command should not \{invalid_Path} is invalid path");
+    }
+
+    // test "rmdir" with a valid path
     @Test
     void testRmDir() throws IOException {
         Shell.restPath();
@@ -97,10 +163,39 @@ class ShellTest {
             boolean isCreated = inputHandler.deleteDirectory.rmdir("/home/user/Documents/Dummy");
             assertTrue(isCreated, "This is command should create Directory in the directory");
         } else {
+            // path of the directory
             String DeleteDirectoryAt = STR."\{inputHandler.PWD.pwd()}\\Dummy";
+            // path create the directory
+            inputHandler.createDirectory.mkdir(DeleteDirectoryAt);
+
+            // delete the directory and check if is deleted
             boolean isCreated = inputHandler.deleteDirectory.rmdir(DeleteDirectoryAt);
             assertTrue(isCreated, "This is command should Delete Directory in the directory");
         }
+    }
+
+    @Test
+    void testRmDirNotExistFile() throws IOException {
+        Shell.restPath();
+        Shell shell = new Shell();
+        InputHandler inputHandler = shell.inputHandler;
+
+        String invalid_Path = "some/path/any/where";
+        boolean isCreated = inputHandler.deleteDirectory.rmdir(invalid_Path);
+        assertFalse(isCreated, "This is command should not work because it's not valid path");
+    }
+
+
+    // pass invalid path to rmdir function
+    @Test
+    void testRmDirDeleteFile() throws IOException {
+        Shell.restPath();
+        Shell shell = new Shell();
+        InputHandler inputHandler = shell.inputHandler;
+
+        String invalid_Path = "some/path/any/where";
+        boolean isDeleted = inputHandler.deleteDirectory.rmdir(invalid_Path);
+        assertFalse(isDeleted, STR."This is command should not delete directory at \{invalid_Path} because path is invalid");
     }
 
     @Test
@@ -120,6 +215,8 @@ class ShellTest {
         }
     }
 
+
+    // test "ls -a > path": get ls of directories and files in the current directory and store them in txt file
     @Test
     void testRedirectOutput() throws IOException  {
 
@@ -129,13 +226,16 @@ class ShellTest {
 
         if (isLinux()) {
             inputHandler.handleInput("ls \"/home/user/Documents\" > listOfFile.txt");
-
+            String filePath = "/home/user/Documents/testDirectorOperator.txt";
+            File file = new File(filePath);
+            boolean isFileCreated = (file.exists() && !file.isDirectory());
+            assertTrue(isFileCreated, "This command should create file if not exist and put inside it list file in the current working directory");
         } else {
             inputHandler.handleInput("ls -a > testDirectorOperator.txt");
             String filePath = STR."\{inputHandler.PWD.pwd()}\\testDirectorOperator.txt";
             File file = new File(filePath);
             boolean isFileCreated = (file.exists() && !file.isDirectory());
-            assertTrue(isFileCreated, "This command should create if note exist and put inside it file contain list file in the current working directory");
+            assertTrue(isFileCreated, "This command should create file if not exist and put inside it list file in the current working directory");
         }
 
     }
@@ -148,13 +248,32 @@ class ShellTest {
 
         if (isLinux()) {
             inputHandler.handleInput("ls \"/home/user/Documents\" >> listOfFile.txt");
-
+            String filePath = "/home/user/Documents/testDirectorOperator.txt";
+            File file = new File(filePath);
+            boolean isFileCreated = (file.exists() && !file.isDirectory());
+            assertTrue(isFileCreated, "This command should create if note exist and append (if it's already have content) inside it file contain list file in passed directory");
         } else {
             inputHandler.handleInput("ls -a >> testDirectorOperator.txt");
             String filePath = STR."\{inputHandler.PWD.pwd()}\\testDirectorOperator.txt";
             File file = new File(filePath);
             boolean isFileCreated = (file.exists() && !file.isDirectory());
             assertTrue(isFileCreated, "This command should create if note exist and append (if it's already have content) inside it file contain list file in the current working directory");
+        }
+    }
+
+    // rename a file
+    @Test
+    void testMove() throws UnknownHostException {
+
+        Shell.restPath();
+        Shell shell = new Shell();
+        InputHandler inputHandler = shell.inputHandler;
+
+        if (isLinux()) {
+
+        } else {
+            String filePath = STR."\{inputHandler.PWD.pwd()}\\testDirectorOperator.txt";
+
         }
 
     }

@@ -24,6 +24,10 @@ public class CreateFile {
 
         if (!filePath.isAbsolute()) {
             path = lsdf.pathHandler(directory, true);
+            if (path.equals("Invalid path")) {
+                System.out.println("Invalid path");
+                return false;
+            }
             filePath =  Paths.get(path);
         }
 

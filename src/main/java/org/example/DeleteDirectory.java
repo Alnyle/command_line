@@ -25,13 +25,17 @@ public class DeleteDirectory {
         Path folderPath = Paths.get(directory);
         if (!folderPath.isAbsolute()) {
             path = lsdf.pathHandler(directory, true);
+            if (path.equals("Invalid path")) {
+                System.out.println("Invalid path");
+                return false;
+            }
             folderPath =  Paths.get(path);
         }
 
 
         if (!Files.exists(folderPath)) {
             if (Files.isDirectory(folderPath)) {
-                System.out.println(STR."Directory already exists: \{folderPath}");
+                System.out.println(STR."Directory does not exists: \{folderPath}");
                 return false;
             }
         }

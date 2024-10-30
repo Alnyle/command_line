@@ -23,6 +23,10 @@ public class CreateDirectory {
         Path folderPath = Paths.get(directory);
         if (!folderPath.isAbsolute()) {
             path = lsdf.pathHandler(directory, true);
+            if (path.equals("Invalid path")) {
+                System.out.println("Invalid path");
+                return false;
+            }
             folderPath =  Paths.get(path);
         }
 

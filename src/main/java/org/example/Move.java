@@ -6,11 +6,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 
-public class MoveFile {
+public class Move {
     private final LSDF lsdf;
 
 
-    public MoveFile(LSDF lsdf) {
+    public Move(LSDF lsdf) {
         this.lsdf = lsdf;
     }
 

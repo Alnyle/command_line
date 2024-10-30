@@ -23,7 +23,7 @@ public class InputHandler {
 
     final RedirectOutputWrite wirteToFile;
 
-    final MoveFile moveFile;
+    final Move move;
 
     public InputHandler() {
         changeDirectory = new ChangeDirectory();
@@ -35,7 +35,7 @@ public class InputHandler {
         readFile = new Cat(listDirectoriesFiles);
         PWD = new PrintCurrentDirectory();
         wirteToFile = new RedirectOutputWrite(listDirectoriesFiles, PWD);
-        moveFile = new MoveFile(listDirectoriesFiles);
+        move = new Move(listDirectoriesFiles);
     }
 
 
@@ -52,6 +52,11 @@ public class InputHandler {
 //            System.out.print(str + ", ");
 //        }
 
+        long quoteCount = Input.chars().filter(ch -> ch == '"').count();
+        if (quoteCount % 2 != 0) {
+            System.out.println(STR."Invalid command: \{Input}");
+            return;
+        }
 
         switch (arguments[0]) {
             case "cd" -> changeDirectory.cd(arguments[1]);
@@ -59,6 +64,7 @@ public class InputHandler {
             case "pwd" -> {
                 if (arguments.length == 1) {
                     PWD.pwd();
+                    return;
                 }
 
                 if (arguments.length == 3) {
@@ -158,11 +164,11 @@ public class InputHandler {
                             wirteToFile.listRedirectOutPut(arguments[2],arguments[4], ">>", true, true);
                         }
                         else {
-                            System.out.println("Invalid command");
+                            System.out.println(STR."Invalid Input: \{Input}");
                         }
                     }
                     else {
-                        System.out.println("Invalid command");
+                        System.out.println(STR."Invalid Input: \{Input}");
                     }
                 }
                 else if (arguments.length == 6) {
@@ -175,7 +181,7 @@ public class InputHandler {
                             wirteToFile.listRedirectOutPut(arguments[3],arguments[5], ">>", true, true);
                         }
                     } else {
-                        System.out.println("Invalid command");
+                        System.out.println(STR."Invalid Input: \{Input}");
                     }
                 }
             }
@@ -197,7 +203,7 @@ public class InputHandler {
                     } else if (arguments[2].equals(">>")) {
                         wirteToFile.catRedirect(arguments[1], arguments[3], ">>");
                     } else {
-                        System.out.println("Invalid command");
+                        System.out.println(STR."Invalid Input: \{Input}");
                     }
                 }
 
@@ -205,13 +211,30 @@ public class InputHandler {
 
             case "mv" -> {
                 if (arguments.length == 3) {
-                    moveFile.mv(arguments[1], arguments[2]);
+                    move.mv(arguments[1], arguments[2]);
                 } else {
-                    System.out.println("Invalid command");
+                    System.out.println(STR."Invalid Input: \{Input}");
                 }
             }
 
-            default -> System.out.println("Invalid Input");
+            case "exist" -> {
+                if (arguments.length == 1) {
+                    System.exit(0);
+                } else {
+                    System.out.println(STR."Invalid Input \{Input}");
+                }
+            }
+
+
+            case "help" -> {
+                if (arguments.length == 1) {
+                    System.out.println(Shell.doc);
+                } else {
+                    System.out.println(STR."Invalid Input \{Input}");
+                }
+            }
+
+            default -> System.out.println(STR."Invalid Input: \{Input}");
         }
     }
 

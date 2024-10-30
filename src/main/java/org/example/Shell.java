@@ -27,6 +27,19 @@ public class Shell {
 
     public static final String defaultPath = String.valueOf(new File(System.getProperty("user.dir")));
 
+    public final static String doc = """
+    mv [Source_file_or_folder_name] [Destination_file_or_folder_name]
+    cat [filename]
+    ls [-a:optional]:optional [-r]:optional [directory:optional]
+    pwd - print working directory
+    cd [directory]
+    mkdir [directory_name]
+    touch [filename]
+    rm [filename]
+    rmdir [directory_name]
+    """;
+
+
     static {
         currentPath = String.valueOf(new File(System.getProperty("user.dir")));
     }

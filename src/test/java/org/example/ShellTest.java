@@ -8,6 +8,7 @@ import java.net.UnknownHostException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,6 +27,8 @@ class ShellTest {
     // test "cd" with valid directory path "directory name is `target`"
     @Test
     void testCd() throws IOException {
+
+        Shell.restPath();
         Shell shell = new Shell();
         InputHandler inputHandler = shell.inputHandler;
 
@@ -45,6 +48,7 @@ class ShellTest {
     @Test
     void testLs() throws IOException {
 
+        // rest the path to current programming directory
         Shell.restPath();
         Shell shell = new Shell();
         InputHandler inputHandler = shell.inputHandler;
@@ -63,6 +67,7 @@ class ShellTest {
     @Test
     void testTouch() throws IOException {
 
+        // rest the path to current programming directory
         Shell.restPath();
         Shell shell = new Shell();
         InputHandler inputHandler = shell.inputHandler;
@@ -85,6 +90,7 @@ class ShellTest {
     @Test
     void testTouchWithoutFileExtension() throws IOException {
 
+        // rest the path to current programming directory
         Shell.restPath();
         Shell shell = new Shell();
         InputHandler inputHandler = shell.inputHandler;
@@ -206,12 +212,19 @@ class ShellTest {
         InputHandler inputHandler = shell.inputHandler;
 
         if (isLinux()) {
-            boolean isCreated = inputHandler.removeFile.rm("/home/user/Documents/test.txt");
-            assertTrue(isCreated, "This is command should create Directory in the directory");
+
+            boolean isCreated = inputHandler.createFile.touch(("/home/user/Documents/test.txt"));
+            if (isCreated) {
+               boolean isDeleted = inputHandler.removeFile.rm("/home/user/Documents/test.txt");
+                assertTrue(isDeleted, "This is command should create Directory in the directory");
+            }
         } else {
             String DeleteFileAt = STR."\{inputHandler.PWD.pwd()}\\test.txt";
-            boolean isCreated = inputHandler.removeFile.rm(DeleteFileAt);
-            assertTrue(isCreated, "This is command should Delete File in the directory");
+            boolean isCreated = inputHandler.createFile.touch(DeleteFileAt);
+            if (isCreated) {
+                boolean isDelete = inputHandler.removeFile.rm(DeleteFileAt);
+                assertTrue(isDelete, "This is command should Delete File in the directory");
+            }
         }
     }
 
@@ -223,18 +236,43 @@ class ShellTest {
         Shell.restPath();
         Shell shell = new Shell();
         InputHandler inputHandler = shell.inputHandler;
-
+        String pathwithoutFile = "";
+        String filePath = "";
+        File file;
         if (isLinux()) {
             inputHandler.handleInput("ls \"/home/user/Documents\" > listOfFile.txt");
-            String filePath = "/home/user/Documents/testDirectorOperator.txt";
-            File file = new File(filePath);
+            pathwithoutFile = "/home/user/Documents";
+            filePath = "/home/user/Documents/testDirectorOperator.txt";
+            file = new File(filePath);
             boolean isFileCreated = (file.exists() && !file.isDirectory());
+            if (isFileCreated) {
+                Scanner reader = new Scanner(file);
+                ArrayList<File> files = inputHandler.listDirectoriesFiles.LS(pathwithoutFile, true);
+                while(reader.hasNextLine()) {
+                    String line = reader.nextLine();
+                    boolean match = files.stream().anyMatch(f -> f.getName().equals(line));
+                    assert  match : STR."file content does not match \{line}";
+                }
+
+                reader.close();
+            }
             assertTrue(isFileCreated, "This command should create file if not exist and put inside it list file in the current working directory");
         } else {
             inputHandler.handleInput("ls -a > testDirectorOperator.txt");
-            String filePath = STR."\{inputHandler.PWD.pwd()}\\testDirectorOperator.txt";
-            File file = new File(filePath);
+            filePath = STR."\{inputHandler.PWD.pwd()}\\testDirectorOperator.txt";
+            file = new File(filePath);
             boolean isFileCreated = (file.exists() && !file.isDirectory());
+            if (isFileCreated) {
+                Scanner reader = new Scanner(file);
+                ArrayList<File> files = inputHandler.listDirectoriesFiles.LS(inputHandler.PWD.pwd(), true);
+                while(reader.hasNextLine()) {
+                    String line = reader.nextLine();
+                    boolean match = files.stream().anyMatch(f -> f.getName().equals(line));
+                    assert  match : STR."file content does not match \{line}";
+                }
+
+                reader.close();
+            }
             assertTrue(isFileCreated, "This command should create file if not exist and put inside it list file in the current working directory");
         }
 
@@ -263,23 +301,51 @@ class ShellTest {
 
     // rename a file
     @Test
-    void testMove() throws UnknownHostException {
+    void testMove() throws IOException {
 
         Shell.restPath();
         Shell shell = new Shell();
         InputHandler inputHandler = shell.inputHandler;
 
         if (isLinux()) {
+            boolean isCreated = inputHandler.createFile.touch(("/home/user/Documents/test.txt"));
+            if (isCreated) {
+                inputHandler.move.mv("/home/user/Documents/test.txt", "/home/user/Documents/NameChanged.txt");
+                File file = new File("/home/user/Documents/NameChanged.txt");
+                boolean isNameChanged = (file.exists() && !file.isDirectory());
+                assertTrue(isNameChanged, "This command should change file name");
+            }
 
         } else {
-            String filePath = STR."\{inputHandler.PWD.pwd()}\\testDirectorOperator.txt";
-
+            String filePath = STR."\{inputHandler.PWD.pwd()}\\test.txt";
+            String newFileName = STR."\{inputHandler.PWD.pwd()}\\newName.txt";
+            boolean isCreated = inputHandler.createFile.touch(filePath);
+            inputHandler.move.mv(filePath, newFileName);
+            File file = new File(newFileName);
+            boolean isNameChanged = (file.exists() && !file.isDirectory());
+            assertTrue(isNameChanged, "This command should change file name");
         }
 
     }
 
+    // try to rename file does not exist
+    @Test
+    void testMoveInvalidPath() throws IOException {
 
+        Shell.restPath();
+        Shell shell = new Shell();
+        InputHandler inputHandler = shell.inputHandler;
+        String invalid_Path = "some/path/any/where";
+        if (isLinux()) {
+            boolean isNameChanged = inputHandler.move.mv("/home/user/Documents/NameChanged.txt", "some/path/any/where");
+            assertFalse(isNameChanged, "This command should change file name");
+        } else {
+            String filePath = STR."\{inputHandler.PWD.pwd()}\\test.txt";
+            boolean isNameChanged =  inputHandler.move.mv(filePath, invalid_Path);
+            assertFalse(isNameChanged, "This command should change file name");
+        }
 
+    }
 
 
 }

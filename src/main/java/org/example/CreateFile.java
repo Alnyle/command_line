@@ -34,7 +34,7 @@ public class CreateFile {
         if (Files.exists(filePath)) {
             if (Files.isRegularFile(filePath)) {
                 System.out.println(STR."File already exists: \{filePath}");
-                return false;
+                return true;
             }
         }
 

@@ -284,23 +284,4 @@ public class LSDF {
             return newPath.getAbsolutePath();
         }
     }
-
-
-
-//    // Filter hidden Folders based on `.`  using filter function
-//    FilenameFilter hiddenFilesFilter = new FilenameFilter() {
-//        @Override
-//        public boolean accept(File dir, String name) {
-//            return name.startsWith(".");
-//        }
-//    };
-//    private String[] getAllFileAndDirectories(String path) {
-//
-//        // Creating A file object for directory
-//        File directoryPath = new File(path);
-//
-//        // get the all directories and files in current path
-//
-//        return directoryPath.list();
-//    }
 }
